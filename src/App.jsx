@@ -5,8 +5,15 @@ import Transactions from './pages/Transactions';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import { ROUTES } from './constants';
+import { useExpenseStore } from './store/useExpenseStore';
 
 export default function App() {
+  const loadTransactions = useExpenseStore((s) => s.loadTransactions);
+
+  useEffect(() => {
+    loadTransactions();
+  }, [loadTransactions]);
+
   return (
     <BrowserRouter>
       <Routes>
