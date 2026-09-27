@@ -60,10 +60,16 @@ export const useExpenseStore = create((set, get) => ({
     }
   },
 
-  clearAll: () => {
-    // This function would need to be updated to delete all records from Supabase.
-    // For now, it's a no-op in the cloud version.
-    console.warn('Clear all is disabled in cloud mode.');
+    clearAll: async () => {
+    try {
+      set({ isLoading: true });
+      await apiService.removeAll();
+      set({ transactions: [], isLoading: false });
+    } catch (err) {
+      console.error('Failed to clear all:', err);
+      set({ isLoading: false });
+      throw err;
+    }
   },
 
   setFilters: (patch) =>

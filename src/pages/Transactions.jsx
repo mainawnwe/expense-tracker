@@ -37,21 +37,37 @@ export default function Transactions() {
     setEditing(null);
     setOpen(true);
   };
+
   const openEdit = (item) => {
     setEditing(item);
     setOpen(true);
   };
+
   const close = () => {
     setOpen(false);
     setEditing(null);
   };
-  const handleSubmit = (data) => {
-    if (editing) updateTransaction(editing.id, data);
-    else addTransaction(data);
-    close();
+
+  const handleSubmit = async (data) => {
+    try {
+      if (editing) {
+        await updateTransaction(editing.id, data);
+      } else {
+        await addTransaction(data);
+      }
+      close();
+    } catch (err) {
+      alert('Failed: ' + err.message);
+    }
   };
-  const handleDelete = (id) => {
-    if (confirm('Delete this transaction?')) removeTransaction(id);
+
+  const handleDelete = async (id) => {
+    if (!confirm('Delete this transaction?')) return;
+    try {
+      await removeTransaction(id);
+    } catch (err) {
+      alert('Failed to delete: ' + err.message);
+    }
   };
 
   return (
@@ -87,7 +103,11 @@ export default function Transactions() {
         onClose={close}
         title={editing ? 'Edit Transaction' : 'Add Transaction'}
       >
-        <ExpenseForm initial={editing} onSubmit={handleSubmit} onCancel={close} />
+        <ExpenseForm
+          initial={editing}
+          onSubmit={handleSubmit}
+          onCancel={close}
+        />
       </Modal>
     </div>
   );

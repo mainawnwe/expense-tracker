@@ -46,4 +46,21 @@ export const apiService = {
       .eq('id', id);
     if (error) throw error;
   },
+    async remove(id) {
+    const { error } = await supabase
+      .from('transactions')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  async removeAll() {
+    // Delete all rows — safe because RLS policy is permissive for demo
+    const { error } = await supabase
+      .from('transactions')
+      .delete()
+      .neq('id', '00000000-0000-0000-0000-000000000000');
+    if (error) throw error;
+  },
 };
+

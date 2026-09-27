@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Plus, ArrowRight, Inbox } from 'lucide-react';
+import { Plus, ArrowRight, Inbox, Cloud } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useExpenseStore } from '../store/useExpenseStore';
 import { Button, Modal, Card } from '../components/ui';
@@ -39,13 +39,22 @@ export default function Dashboard() {
     setOpen(false);
     setEditing(null);
   };
-  const handleSubmit = (data) => {
-    if (editing) updateTransaction(editing.id, data);
-    else addTransaction(data);
-    close();
+  const handleSubmit = async (data) => {
+    try {
+      if (editing) await updateTransaction(editing.id, data);
+      else await addTransaction(data);
+      close();
+    } catch (err) {
+      alert('Failed: ' + err.message);
+    }
   };
-  const handleDelete = (id) => {
-    if (confirm('Delete this transaction?')) removeTransaction(id);
+  const handleDelete = async (id) => {
+    if (!confirm('Delete this transaction?')) return;
+    try {
+      await removeTransaction(id);
+    } catch (err) {
+      alert('Failed to delete: ' + err.message);
+    }
   };
 
   return (
@@ -129,6 +138,15 @@ export default function Dashboard() {
           />
         )}
       </Card>
+
+      {/* ⭐ Cloud sync indicator — footer */}
+      <div className="flex items-center justify-center gap-2 pt-2 pb-4">
+        <Cloud size={12} className="text-green-500" />
+        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+        <p className="text-xs text-slate-400">
+          Synced to Supabase · {transactions.length} records
+        </p>
+      </div>
 
       <Modal
         open={open}

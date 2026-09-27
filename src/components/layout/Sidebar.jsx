@@ -52,7 +52,10 @@ export default function Sidebar({ onNavigate }) {
       </nav>
 
       <div className="p-4 border-t border-slate-100">
-        <p className="text-xs text-slate-400">v1.0 · Local Storage</p>
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+          <p className="text-xs text-slate-400">v1.0 · Supabase</p>
+        </div>
       </div>
     </aside>
   );
